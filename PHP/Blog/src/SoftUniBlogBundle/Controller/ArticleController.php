@@ -53,6 +53,46 @@ class ArticleController extends Controller
         $article = $this->getDoctrine()->getRepository(Article::class)->find($id);
         return $this->render('article/article.html.twig', ['article' => $article]);
     }
+
+    /**
+     * @Route("/article/edit/{id}", name="article_edit")
+     * @Security("is_granted('IS_AUTHENTICATED_FULLY')")
+     *
+     * @param $id
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function editArticle($id, Request $request)
+    {
+        $article = $this->getDoctrine()->getRepository(Article::class)->find($id);
+
+        if ($article === null)
+        {
+            return $this->redirectToRoute("blog_index");
+        }
+
+        $form = $this->createForm(ArticleType::class, $article);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted())// && $form-isValid())
+        {
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($article);
+            $em->flush();
+
+            return $this->redirectToRoute('article_view',
+                array('id' => $article->getId()));
+        }
+        return $this->render('article/edit.html.twig',
+            array('article' => $article,
+                'form' => $form->createView()));
+
+
+
+
+    }
+
 }
 
 
