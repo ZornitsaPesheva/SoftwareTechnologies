@@ -40,7 +40,11 @@ module.exports = (app) => {
     });
 
     app.get('/admin/user/all', adminController.user.all);
+
     app.get('/admin/user/edit/:id', adminController.user.editGet);
     app.post('/admin/user/edit/:id', adminController.user.editPost);
+
+    app.get('/admin/user/delete/:id', adminController.user.deleteGet);
+
 };
 
