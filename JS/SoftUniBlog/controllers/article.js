@@ -82,8 +82,11 @@ module.exports = {
                     res.redirect('/');
                     return;
                 }
+                Category.find({}).then(categories => {
+                    article.categories = categories;
 
-                res.render('article/edit', article)
+                    res.render('article/edit', article)
+                })
             });
         });
     },
@@ -111,10 +114,29 @@ module.exports = {
         if(errorMsg) {
             res.render('article/edit', {error: errorMsg})
         } else {
-            Article.update({_id: id}, {$set: {title: articleArgs.title, content: articleArgs.content}})
-                .then(updateStatus => {
-                    res.redirect(`/article/details/${id}`);
-                })
+            Article.findById(id).populate('caegory').then(article => {
+                if (article.category.id !== articleArgs.category) {
+                    article.category.articles.remove(article.id);
+                    article.category.save();
+                }
+                article.category = articleArgs.category;
+                article.title = articleArgs.title;
+                article.content = articleArgs.content;
+
+                article.save((err) => {
+                    if (err) {
+                        console.log(err.message);
+                    }
+                    Category.findById(article.category).then(category => {
+                        if (category.articles.indexOf(article.id) === -1){
+                            category.articles.push(article.id);
+                            category.save();
+                        }
+
+                        res.redirect(`/article/details/${id}`);
+                    })
+                });
+            });
         }
     },
 

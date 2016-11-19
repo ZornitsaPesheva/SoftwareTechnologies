@@ -24,6 +24,34 @@ module.exports = {
                 res.redirect('/admin/category/all');
             })
         }
+    },
+
+    editGet: (req, res) => {
+        let id = req.params.id;
+
+        Category.findById(id).then(category => {
+            res.render('admin/category/edit', {category: category})
+        })
+    },
+
+    editPost: (req, res) => {
+        let id = req.params.id;
+
+        let editArgs = req.body;
+
+        if(!editArgs.name) {
+            let errorMessage = 'Category name cannot be null!';
+
+            Category.findById(id).then(category => {
+                res.render('admin/category/edit', {category: category, error: errorMessage});
+            })
+        } else {
+            Category.findOneAndUpdate({_id: id}, {name: editArgs.name}).then(category => {
+                res.redirect('/admin/category/all');
+            })
+        }
+
     }
+
 }
 

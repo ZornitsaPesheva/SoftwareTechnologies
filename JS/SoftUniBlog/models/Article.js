@@ -22,7 +22,7 @@ articleSchema.method({
             //if there are no categories
             if (category) {
                 category.articles.push(this.id);
-                category.aave();
+                category.save();
             }
         })
     },
