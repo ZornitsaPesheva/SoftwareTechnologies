@@ -98,3 +98,38 @@ module.exports = {
         res.redirect('/');
     }
 };
+
+module.exports.seedAdmin = () => {
+    let email = 'admin@softuni.bg';
+    User.findOne({email: email}).then(admin => {
+        if (!admin) {
+            Role.findOne({name: 'Admin'}).then(role => {
+                let salt = encription.generateSalt();
+                let passwordHash = encription.hashPassword('admin', salt);
+
+                let roles = [];
+                roles.push(role.id);
+
+                let user = {
+                    email: email,
+                    passwordHash: passwordHash,
+                    fullName: 'Admin',
+                    articles: [],
+                    salt: salt,
+                    roles: roles
+                };
+
+                User.create(user).then(user => {
+                    role.users.push(user.id);
+                    role.save(err => {
+                        if (err) {
+                            console.log(err.message);
+                        } else {
+                            console.log('Admin seeded successfully')
+                        }
+                    });
+                })
+            })
+        }
+    })
+}
