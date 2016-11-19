@@ -58,6 +58,15 @@ userSchema.method ({
               article.remove();
             })
         }
+    },
+
+    prepareInsert: function () {
+        for (let role of this.roles) {
+            Role.findById(role).then(role => {
+                role.users.push(this.id);
+                role.save();
+            });
+        }
     }
 });
 

@@ -39,23 +39,14 @@ module.exports = {
 
                     userObject.roles = roles;
                     User.create(userObject).then(user => {
-                        role.users.push(user);
-                        role.save(err => {
-                            if(err) {
+                        user.prepareInsert();
+                        req.logIn(user, (err) => {
+                            if (err) {
                                 registerArgs.error = err.message;
                                 res.render('user/register', registerArgs);
+                                return;
                             }
-                            else {
-                                req.logIn(user, (err) => {
-                                    if (err) {
-                                        registerArgs.error = err.message;
-                                        res.render('user/register', registerArgs);
-                                        return;
-                                    }
-
-                                    res.redirect('/');
-                                })
-                            }
+                            res.redirect('/');
                         });
                     });
                 });
