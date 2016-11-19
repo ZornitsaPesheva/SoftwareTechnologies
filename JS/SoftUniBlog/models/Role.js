@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 
+
 let roleSchema = mongoose.Schema({
     name: {type: String, required: true, unique: true},
     users: [{type: mongoose.Schema.Types.ObjectId, ref: 'User'}]
