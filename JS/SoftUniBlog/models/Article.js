@@ -4,6 +4,7 @@ let articleSchema = mongoose.Schema({
     title: {type: String, required: true},
     content: {type: String, required: true},
     author: {type: mongoose.Schema.Types.ObjectId, required: true, ref: 'User'},
+    category: {type: mongoose.Schema.Types.ObjectId, required: true, ref: 'Category'},
     date: {type: Date, default: Date.now()}
 });
 
@@ -14,6 +15,16 @@ articleSchema.method({
             user.articles.push(this.id);
             user.save();
         });
+
+        let Category = mongoose.model('Category');
+        Category.findById(this.category).then(category =>{
+            //if the article is created without category
+            //if there are no categories
+            if (category) {
+                category.articles.push(this.id);
+                category.aave();
+            }
+        })
     },
 
     prepareDelete: function () {
@@ -24,6 +35,15 @@ articleSchema.method({
             if (user) {
                 user.articles.remove(this.id);
                 user.save();
+            }
+        });
+
+        let Category = mongoose.model('Category');
+        Category.findById(this.category).then(category => {
+            //if the category is not already deleted.
+            if (category) {
+                category.articles.remove(this.id);
+                category.save();
             }
         });
     }

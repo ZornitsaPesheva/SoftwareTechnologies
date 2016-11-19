@@ -1,4 +1,5 @@
 const Article = require('mongoose').model('Article');
+const Category = require('mongoose').model('Category');
 
 module.exports = {
     createGet: (req, res) => {
@@ -10,7 +11,10 @@ module.exports = {
             return;
         }
 
-        res.render('article/create');
+        Category.find({}).then(categories =>{
+            res.render('article/create', {categories: categories});
+        })
+
     },
 
     createPost: (req, res) => {
