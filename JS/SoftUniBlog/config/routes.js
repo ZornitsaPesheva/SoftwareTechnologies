@@ -56,5 +56,8 @@ module.exports = (app) => {
     app.get('/admin/category/edit/:id', adminController.category.editGet);
     app.post('/admin/category/edit/:id', adminController.category.editPost);
 
+    app.get('/admin/category/delete/:id', adminController.category.deleteGet);
+    app.post('/admin/category/delete/:id', adminController.category.deletePost);
+
 };
 
