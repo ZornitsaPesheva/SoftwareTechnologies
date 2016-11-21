@@ -118,7 +118,7 @@ module.exports = {
         if(errorMsg) {
             res.render('article/edit', {error: errorMsg})
         } else {
-            Article.findById(id).populate('caegory tags').then(article => {
+            Article.findById(id).populate('category tags').then(article => {
                 if (article.category.id !== articleArgs.category) {
                     article.category.articles.remove(article.id);
                     article.category.save();
@@ -203,7 +203,5 @@ module.exports = {
 
 
         });
-
-
     }
 };
