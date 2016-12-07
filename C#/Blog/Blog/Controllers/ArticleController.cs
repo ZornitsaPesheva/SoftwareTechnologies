@@ -55,7 +55,8 @@ namespace Blog.Controllers
             }
         }
 
-        // GET: Article/create
+        // GET: Article/Create
+        [Authorize]
         public ActionResult Create()
         {
             return View();
@@ -63,6 +64,7 @@ namespace Blog.Controllers
 
         // POST: Article/Create
         [HttpPost]
+        [Authorize]
         public ActionResult Create(Article article)
         {
             if (ModelState.IsValid)
@@ -104,6 +106,11 @@ namespace Blog.Controllers
                     .Where(a => a.Id == id)
                     .Include(a => a.Author)
                     .First();
+
+                if (!IsUserAuthorizedToEdit(article))
+                {
+                    return new HttpStatusCodeResult(HttpStatusCode.Forbidden);
+                }
                 
                 // Check if article exist
                 if (article == null)
@@ -194,6 +201,11 @@ namespace Blog.Controllers
                     var article = database.Articles
                         .FirstOrDefault(a => a.Id == model.Id);
 
+                    if (!IsUserAuthorizedToEdit(article))
+                    {
+                        return new HttpStatusCodeResult(HttpStatusCode.Forbidden);
+                    }
+
                     // Set article properties
                     article.Title = model.Title;
                     article.Content = model.Content;
@@ -210,6 +222,14 @@ namespace Blog.Controllers
             // If model state is invalid, retyrn the same view
 
             return View(model);
+        }
+
+        private bool IsUserAuthorizedToEdit(Article article)
+        {
+            bool isAdmin = this.User.IsInRole("Admin");
+            bool isAuthor = article.IsAuthor(this.User.Identity.Name);
+
+            return isAdmin || isAuthor;
         }
     }
 }
