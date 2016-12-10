@@ -59,13 +59,21 @@ namespace Blog.Controllers
         [Authorize]
         public ActionResult Create()
         {
-            return View();
+            using (var database = new BlogDbContext())
+            {
+                var model = new ArticleViewModel();
+                model.Categories = database.Categories
+                    .OrderBy(c => c.Name)
+                    .ToList();
+
+                return View(model);
+            }
         }
 
         // POST: Article/Create
         [HttpPost]
         [Authorize]
-        public ActionResult Create(Article article)
+        public ActionResult Create(ArticleViewModel model)
         {
             if (ModelState.IsValid)
             {
@@ -77,8 +85,7 @@ namespace Blog.Controllers
                         .First()
                         .Id;
 
-                    // Set articles author
-                    article.AuthorId = authorId;
+                    var article = new Article(authorId, model.Title, model.Content, model.CategoryId);
 
                     //Save article in DB
                     database.Articles.Add(article);
@@ -86,10 +93,9 @@ namespace Blog.Controllers
 
                     return RedirectToAction("Index");
                 }
-            }
-
-            return View(article);
-        }
+             }
+           return View(model);
+      }
 
         // GET Article/Delete
         public ActionResult Delete(int? id)
@@ -182,6 +188,10 @@ namespace Blog.Controllers
                 model.Id = article.Id;
                 model.Title = article.Title;
                 model.Content = article.Content;
+                model.CategoryId = article.CategoryId;
+                model.Categories = database.Categories
+                    .OrderBy(c => c.Name)
+                    .ToList();
 
                 // Pass the view model to view
                 return View(model);
@@ -209,6 +219,7 @@ namespace Blog.Controllers
                     // Set article properties
                     article.Title = model.Title;
                     article.Content = model.Content;
+                    article.CategoryId = model.CategoryId;
 
                     // Save article state in database
                     database.Entry(article).State = EntityState.Modified;

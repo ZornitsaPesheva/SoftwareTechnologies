@@ -9,7 +9,21 @@ namespace Blog.Models
 {
     public class Article
     {
+        public Article()
+        {
+
+        }
+
+        public Article(string authorId, string title, string content, int categoryId)
+        {
+            this.AuthorId = authorId;
+            this.Title = title;
+            this.Content = content;
+            this.CategoryId = categoryId;
+        }
+
         [Key]
+        
         public int Id { get; set; }
 
         [Required]
@@ -27,5 +41,9 @@ namespace Blog.Models
         {
             return this.Author.UserName.Equals(name);
         }
+
+        [ForeignKey("Category")]
+        public int CategoryId { get; set; }
+        public virtual Category Category { get; set; }
     }
 }
