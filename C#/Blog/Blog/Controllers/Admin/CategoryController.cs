@@ -24,5 +24,29 @@ namespace Blog.Controllers.Admin
                 return View(categories);
             }
         }
+
+        // GET: Category/Create
+        public ActionResult create()
+        {
+            return View();
+        }
+
+        // POST: Category/Create
+        [HttpPost]
+        public ActionResult Create(Category category)
+        {
+            if (ModelState.IsValid)
+            {
+                using (var database = new BlogDbContext())
+                {
+                    database.Categories.Add(category);
+                    database.SaveChanges();
+
+                    return RedirectToAction("Index");
+                }
+            }
+
+            return View(category);
+        }
     }
 }
