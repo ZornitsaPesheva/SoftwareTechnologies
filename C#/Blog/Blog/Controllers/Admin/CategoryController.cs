@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Web;
 using System.Web.Mvc;
 
@@ -46,6 +47,45 @@ namespace Blog.Controllers.Admin
                 }
             }
 
+            return View(category);
+        }
+
+        // GET: Category/edit
+        public ActionResult Edit(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            
+            using (var database = new BlogDbContext())
+            {
+                var category = database.Categories
+                    .FirstOrDefault(c => c.Id == id);
+
+                if (category == null)
+                {
+                    return HttpNotFound();
+                }
+
+                return View(category);
+            }
+        }
+
+        // GET: Category/Edit
+        [HttpPost]
+        public ActionResult Edit(Category category)
+        {
+            if (ModelState.IsValid)
+            {
+                using (var database = new BlogDbContext())
+                {
+                    database.Entry(category).State = System.Data.Entity.EntityState.Modified;
+                    database.SaveChanges();
+
+                    return RedirectToAction("Index");
+                }
+            }
             return View(category);
         }
     }
