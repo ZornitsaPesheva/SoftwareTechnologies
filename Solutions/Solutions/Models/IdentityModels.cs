@@ -30,7 +30,10 @@ namespace Solutions.Models
 
         public virtual IDbSet<Course> Courses { get; set; }
 
-        public virtual IDbSet<Module> Modules { get; set;  }
+        public virtual IDbSet<Module> Modules { get; set; }
+
+        public virtual IDbSet<Post> Posts { get; set; }
+
         public static ApplicationDbContext Create()
         {
             return new ApplicationDbContext();
