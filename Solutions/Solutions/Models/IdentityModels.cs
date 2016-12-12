@@ -34,6 +34,8 @@ namespace Solutions.Models
 
         public virtual IDbSet<Post> Posts { get; set; }
 
+        public virtual IDbSet<Chapter> Chapters { get; set; }
+
         public static ApplicationDbContext Create()
         {
             return new ApplicationDbContext();

@@ -37,7 +37,7 @@ namespace Solutions.Controllers
             {
                 var modules = database.Modules
                     .Include(c => c.Courses)
-                    .OrderBy(c => c.Name)
+                 //   .OrderBy(c => c.Name)
                     .ToList();
 
                 return View(modules);
@@ -54,10 +54,28 @@ namespace Solutions.Controllers
             using (var database = new ApplicationDbContext())
             {
                 var courses = database.Courses
+                    .Include(c => c.Chapters)
                     .Where(a => a.ModuleId == moduleId)
                     .ToList();
 
                 return View(courses);
+            }
+        }
+
+        public ActionResult ListChapters(int? courseId)
+        {
+            if (courseId == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+
+            using (var database = new ApplicationDbContext())
+            {
+                var chapters = database.Chapters
+                    .Where(a => a.CourseId == courseId)
+                    .ToList();
+
+                return View(chapters);
             }
         }
     }

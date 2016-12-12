@@ -1,62 +1,63 @@
 ﻿using Solutions.Models;
 using System;
 using System.Collections.Generic;
-using System.Data.Entity;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 
 namespace Solutions.Controllers
 {
-    public class PostController : Controller
+    public class ChapterController : Controller
     {
-        // GET: Post
+        // GET: Chapter
         public ActionResult Index()
         {
             return RedirectToAction("List");
         }
 
-        // GET: Post/List
+        // GET: Chapter/List
         public ActionResult List()
         {
             using (var database = new ApplicationDbContext())
             {
-                var posts = database.Posts
-                    .Include(a => a.Author)
+                var chapters = database.Chapters
                     .ToList();
 
-                return View(posts);
+                return View(chapters);
             }
         }
 
-        // GET: Post/Create
+        // GET: Chapter/Create
         public ActionResult Create()
         {
-            return View();
+            using (var database = new ApplicationDbContext())
+            {
+                var model = new ChapterViewModel();
+                model.Courses = database.Courses
+                    .OrderBy(c => c.Name)
+                    .ToList();
+
+                return View(model);
+            }
         }
 
-        // POST: Post/Create
+        // POST: Chapter/Create
         [HttpPost]
-        public ActionResult Create(Post post)
+        public ActionResult Create(ChapterViewModel model)
         {
             if (ModelState.IsValid)
             {
                 using (var database = new ApplicationDbContext())
                 {
-                    var authorId = database.Users
-                        .Where(u => u.UserName == this.User.Identity.Name)
-                        .First()
-                        .Id;
+                    var chapter = new Chapter(model.Title, model.CourseId);
 
-                    post.AuthorId = authorId;
-
-                    database.Posts.Add(post);
+                    database.Chapters.Add(chapter);
                     database.SaveChanges();
 
                     return RedirectToAction("Index");
                 }
             }
-            return View(post);
+            return View(model);
         }
     }
 }

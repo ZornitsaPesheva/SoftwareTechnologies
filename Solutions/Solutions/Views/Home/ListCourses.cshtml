@@ -9,7 +9,8 @@
         @foreach (var course in Model)
         {
              <h2>
-                 @Html.ActionLink(@course.Name, "Details", "Course", new { @id = course.Id }, null)
+                    @Html.ActionLink(string.Format($"{course.Name} ({course.Chapters.Count})"),
+                        "ListChapters", "Home", new { @courseId = course.Id }, null)
              </h2>       
 
         }

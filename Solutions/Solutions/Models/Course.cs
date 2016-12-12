@@ -8,9 +8,10 @@ namespace Solutions.Models
 {
     public class Course
     {
+        private ICollection<Chapter> chapters;
         public Course()
         {
-
+            this.chapters = new HashSet<Chapter>();
         }
 
         public Course(string name, int moduleId)
@@ -28,5 +29,9 @@ namespace Solutions.Models
         [ForeignKey("Module")]
         public int ModuleId { get; set; }
         public virtual Module Module { get; set; }
+
+        public virtual ICollection<Chapter> Chapters { get; set; }
+
+        
     }
 }
