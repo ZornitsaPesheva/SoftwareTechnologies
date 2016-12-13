@@ -9,10 +9,11 @@
         @foreach (var chapter in Model)
         {
             <h2>
-                 @Html.ActionLink(@chapter.Title, "Details", "Chapter", new { @id = chapter.Id }, null)
+                @Html.ActionLink(string.Format($"{chapter.Title} ({chapter.Posts.Count})"),
+                        "ListPosts", "Home", new { @chapterId = chapter.Id }, null)
             </h2>
 
         }
     </div>
 </div>
-<hr /
+<hr />

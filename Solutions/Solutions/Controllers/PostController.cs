@@ -32,12 +32,19 @@ namespace Solutions.Controllers
         // GET: Post/Create
         public ActionResult Create()
         {
-            return View();
+            using (var database = new ApplicationDbContext())
+            {
+                var model = new PostViewModel();
+                model.Chapters = database.Chapters
+                    .ToList();
+
+                return View(model);
+            }
         }
 
         // POST: Post/Create
         [HttpPost]
-        public ActionResult Create(Post post)
+        public ActionResult Create(PostViewModel model)
         {
             if (ModelState.IsValid)
             {
@@ -48,7 +55,7 @@ namespace Solutions.Controllers
                         .First()
                         .Id;
 
-                    post.AuthorId = authorId;
+                    var post = new Post(authorId, model.Title, model.Link, model.ChapterId);
 
                     database.Posts.Add(post);
                     database.SaveChanges();
@@ -56,7 +63,9 @@ namespace Solutions.Controllers
                     return RedirectToAction("Index");
                 }
             }
-            return View(post);
+            return View(model);
         }
+
+        // GET: Post/Delete
     }
 }

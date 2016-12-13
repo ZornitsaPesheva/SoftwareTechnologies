@@ -215,6 +215,7 @@
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\Module.cs" />
     <Compile Include="Models\Post.cs" />
+    <Compile Include="Models\PostViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>
@@ -290,6 +291,7 @@
     <Content Include="Views\Post\Create.cshtml" />
     <Content Include="Views\Chapter\List.cshtml" />
     <Content Include="Views\Home\ListChapters.cshtml" />
+    <Content Include="Views\Home\ListPosts.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

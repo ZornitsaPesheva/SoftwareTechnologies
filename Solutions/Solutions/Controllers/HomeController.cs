@@ -72,10 +72,29 @@ namespace Solutions.Controllers
             using (var database = new ApplicationDbContext())
             {
                 var chapters = database.Chapters
+                    .Include(p => p.Posts)
                     .Where(a => a.CourseId == courseId)
                     .ToList();
 
                 return View(chapters);
+            }
+        }
+
+        public ActionResult ListPosts(int? chapterId)
+        {
+            if (chapterId == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+
+            using (var database = new ApplicationDbContext())
+            {
+                var posts = database.Posts
+                    .Where(a => a.ChapterId == chapterId)
+                    .Include(a => a.Author)
+                    .ToList();
+
+                return View(posts);
             }
         }
     }

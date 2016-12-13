@@ -9,9 +9,10 @@ namespace Solutions.Models
 {
     public class Chapter
     {
+        private ICollection<Post> posts;
         public Chapter()
         {
-
+            this.posts = new HashSet<Post>();
         }
 
         public Chapter(string title, int courseId)
@@ -32,5 +33,8 @@ namespace Solutions.Models
         public virtual Course Course { get; set; }
 
         public virtual ICollection<Course> Courses { get; set; }
+
+        public virtual ICollection<Post> Posts { get; set; }
+               
     }
 }
