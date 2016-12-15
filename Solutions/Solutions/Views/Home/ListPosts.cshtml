@@ -5,7 +5,8 @@
 
 <div class="container">
     <div class="row">
-        @foreach (var post in Model)
+       <h1>Shared solutions:</h1>
+         @foreach (var post in Model)
         {
             <article>
                 <header>
@@ -13,6 +14,9 @@
                         <a href="@Html.DisplayFor(modelItem => post.Link)">@Html.DisplayFor(modelItem => post.Title)</a>
                     </h2>
                 </header>
+                <p>
+                    @post.Link
+                </p>
 
                 <footer class="pull-right">
                     <small class="author">

@@ -6,11 +6,12 @@
 
 <div class="container">
     <div class="row">
+        <h1>Modules:</h1>
         @foreach (var module in Model)
         {
 
-                <p>
-                    <h2>
+            <p>
+                <h2>
                         @Html.ActionLink(string.Format($"{module.Name} ({module.Courses.Count})"),
                         "ListCourses", "Home", new { @moduleId = module.Id }, null)
                 </h2>
