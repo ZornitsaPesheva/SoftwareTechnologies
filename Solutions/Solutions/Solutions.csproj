@@ -298,6 +298,7 @@
     <Content Include="Views\User\Edit.cshtml" />
     <Content Include="Views\Course\Delete.cshtml" />
     <Content Include="Views\Course\Create.cshtml" />
+    <Content Include="Views\Modules\Order.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
