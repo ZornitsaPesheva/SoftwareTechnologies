@@ -24,6 +24,7 @@ namespace Blog.Controllers
                     .Include(c => c.Articles)
                     .OrderBy(c => c.Name)
                     .ToList();
+
                 return View(categories); 
             }
         }
@@ -40,6 +41,7 @@ namespace Blog.Controllers
                 var articles = database.Articles
                     .Where(a => a.CategoryId == categoryId)
                     .Include(a => a.Author)
+                    .Include(a => a.Tags)
                     .ToList();
 
                 return View(articles);
