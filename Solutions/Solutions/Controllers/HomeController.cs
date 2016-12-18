@@ -36,7 +36,7 @@ namespace Solutions.Controllers
             using (var database = new ApplicationDbContext())
             {
                 var modules = database.Modules
-                    .Include(c => c.Courses)
+                    .Include(m => m.Courses)
                     .OrderBy(m => m.Priority)
                     .ToList();
 
@@ -44,23 +44,37 @@ namespace Solutions.Controllers
             }
         }
 
+        private ApplicationDbContext database = new ApplicationDbContext();
         public ActionResult ListCourses(int? moduleId)
         {
+
             if (moduleId == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
 
-            using (var database = new ApplicationDbContext())
-            {
-                var courses = database.Courses
-                    .Include(c => c.Chapters)
-                    .Where(a => a.ModuleId == moduleId)
-                    .ToList();
+            
 
-                return View(courses);
-            }
+        //using (var database = new ApplicationDbContext())
+        //{
+        //    //var courses = database.Courses
+        //    .Include(c => c.Chapters)
+        //    .Where(a => a.ModuleId == moduleId)
+        //    .ToList();
+
+        Module module = database.Modules.Find(moduleId);
+                if (module == null)
+                {
+                    return HttpNotFound();
+                }
+                module.Courses = database.Courses.Where(x => x.ModuleId == module.Id)
+                    .ToList();
+                return View(module);
+
+            //   // return View(courses);
+            //}
         }
+
 
         public ActionResult ListChapters(int? courseId)
         {
@@ -69,15 +83,24 @@ namespace Solutions.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
 
-            using (var database = new ApplicationDbContext())
-            {
-                var chapters = database.Chapters
-                    .Include(p => p.Posts)
-                    .Where(a => a.CourseId == courseId)
-                    .ToList();
+            //using (var database = new ApplicationDbContext())
+            //{
+            //    var chapters = database.Chapters
+            //        .Include(p => p.Posts)
+            //        .Where(a => a.CourseId == courseId)
+            //        .ToList();
 
-                return View(chapters);
+            //    return View(chapters);
+            //}
+
+            Course course = database.Courses.Find(courseId);
+            if (course == null)
+            {
+                return HttpNotFound();
             }
+            course.Chapters = database.Chapters.Where(x => x.CourseId == course.Id)
+                .ToList();
+            return View(course);
         }
 
         public ActionResult ListPosts(int? chapterId)
@@ -87,15 +110,35 @@ namespace Solutions.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
 
-            using (var database = new ApplicationDbContext())
+           Chapter chapter = database.Chapters.Find(chapterId);
+            if (chapter == null)
             {
-                var posts = database.Posts
-                    .Where(a => a.ChapterId == chapterId)
-                    .Include(a => a.Author)
-                    .ToList();
-
-                return View(posts);
+                return HttpNotFound();
             }
+            chapter.Posts = database.Posts.Where(x => x.ChapterId == chapter.Id)
+                .Include(p => p.Author)
+                .ToList();
+            return View(chapter);
+
+            //using (var database = new ApplicationDbContext())
+            //{
+            //    var posts = database.Posts
+            //        .Where(a => a.ChapterId == chapterId)
+            //        .Include(a => a.Author)
+            //        .ToList();
+
+            //    return View(posts);
+            //}
         }
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                database.Dispose();
+            }
+            base.Dispose(disposing);
+        }
+
+        
     }
 }
